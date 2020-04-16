@@ -24,11 +24,17 @@ public class Main extends Application {
 	private static Button[][] btns;
 	private static Board board;
 	private static int SIZE;
+	
+	//Image setup
 	static private ImageView onBtn, offBtn; 
 	static private final String onFilePath = new File("").getAbsolutePath() + "\\bin\\img\\on.png";
 	static private final String offFilePath = new File("").getAbsolutePath() + "\\bin\\img\\off.png";
+	
+	//HowToPlay Path
 	static private final String helpFilePath = new File("").getAbsolutePath() + "\\bin\\help\\HowToPlay.html";
-	static private final String[] diffs = {"3", "4", "5", "6"};
+	
+	//We can use this array to add additional difficulties.
+	static private final String[] diffs = {"3", "4", "5", "6", "7"};
 	static boolean answer;
 	static Stage stage;
 	static VBox[] cols;
@@ -53,7 +59,7 @@ public class Main extends Application {
 		try {
 			//set difficulty
 			try {
-				SIZE = Integer.parseInt(DiffSelect(diffs, "Select Difficulty", "Flippy Squares"));
+				SIZE = Integer.parseInt(DiffSelect(diffs));
 			} catch (NumberFormatException e) {
 				System.exit(0); //If they don't wanna play, they don't wanna play.
 			}
@@ -69,12 +75,13 @@ public class Main extends Application {
 			offBtn = new ImageView(offImg);
 			
 			
+			//Setup our Board
 			board = new Board(SIZE);
 			btns = new Button[SIZE][SIZE];
 			cols = new VBox[SIZE];
 			
 			Button reset = new Button();
-			reset.setText("Reset");
+			reset.setText("Give up?");
 			reset.setOnMouseClicked(e -> {
 				try {
 					reset(SIZE);
@@ -96,12 +103,8 @@ public class Main extends Application {
 					reset(SIZE);
 					startGame(primaryStage);
 				} catch (NumberFormatException cancelledBoxOrDidntSelect) {
-					return;
+					System.exit(0);
 				}
-			
-				
-				
-				
 			});
 			MenuItem quitGame = new MenuItem("Quit");
 			quitGame.setOnAction(e -> {
@@ -123,6 +126,9 @@ public class Main extends Application {
 			MenuBar menu = new MenuBar();
 			menu.getMenus().addAll(m,m2);
 			
+			
+			
+			
 			//button setup
 			for (int i = 0; i < SIZE; i++) {
 				for (int j = 0; j < SIZE; j++) {
@@ -132,8 +138,15 @@ public class Main extends Application {
 					int k = i;
 					int l = j;
 					btns[i][j].setOnMouseClicked(e -> {
+						//push the button
+						//this changes the surrounding button states
+						//on the Board object, but it still needs to update the front-end's Images
 						board.pushButton(k, l);
+						
+						//This method updates the button images accordingly.
 						updateLabels(k,l);
+						
+						//Check if we won with that last click
 						if (board.checkFinished()) {
 							WinBox();
 						}
@@ -155,13 +168,9 @@ public class Main extends Application {
 			root.setAlignment(Pos.CENTER);
 			root.setMinWidth(btns.length*80);
 			root.setMinHeight(btns.length*50);
-			
 
-			
-			
-			
-			
 			Scene scene = new Scene(root);
+			
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
@@ -170,7 +179,10 @@ public class Main extends Application {
 	}
 	
 	
-	
+	/**
+	 * Create a new square blank board of a given size
+	 * @param size The length/width of the SQUARE board. 
+	 */
 	private void reset(int size) {
 		board = new Board(size);
 		btns = new Button[size][size];
@@ -202,7 +214,12 @@ public class Main extends Application {
 		}
 		
 	}
-	
+	/**
+	 * Checks to see which labels (around the x/y coordinates given)
+	 * need to be updated, then updates accordingly.
+	 * @param x The x value
+	 * @param y The y Value
+	 */
 	private void updateLabels(int x, int y) {
 		if (board.getButton(x, y)) {
 			btns[x][y].setGraphic(new ImageView(onBtn.getImage()));
@@ -244,8 +261,16 @@ public class Main extends Application {
 		}
 	}
 	
-	public static String DiffSelect(String[] radiolabels, String message, String title) {
-		
+	/**
+	 * Presents a radio select box with different difficulties to choose from.
+	 * @param radiolabels STRING array of different integer options <p>
+	 * i.e. {"3", "4", "5", ... }
+	 * 
+	 * @return String representation of integer choice, i.e. "4"
+	 */
+	private static String DiffSelect(String[] radiolabels) {
+		String message = "Select Difficulty";
+		String title = "Choose Your Destiny!";
 		RadioButton[] radios = new RadioButton[radiolabels.length];
 		ToggleGroup radioGroup = new ToggleGroup();
 		for (int i = 0; i < radiolabels.length; i++) {
@@ -264,11 +289,11 @@ public class Main extends Application {
 		radiobox.getChildren().addAll(radios);
 		
 		Button yes = new Button();
-		yes.setText("Submit");
+		yes.setText("Let's Rock!");
 		yes.setOnMouseClicked(e -> yesClicked());
 		
 		Button no = new Button();
-		no.setText("Cancel");
+		no.setText("Can't do it..");
 		no.setOnMouseClicked(e -> noClicked());
 		
 		HBox btnContainer = new HBox(20);
@@ -302,6 +327,9 @@ public class Main extends Application {
 		return null;
 	}
 	
+	/**
+	 * Box to Display on met win condition
+	 */
 	private static void WinBox() {
 		String message = "You win!";
 		String title = "Chicken Dinner!";
@@ -326,6 +354,10 @@ public class Main extends Application {
 		stage.setScene(scene);
 		stage.showAndWait();
 		}
+	
+	/**
+	 * Tell the world a little about yourself, with this fine method!
+	 */
 	private static void AboutBox() {
 		String line1 = "Flippy Squares";
 		String line2 = "April 2020";
@@ -357,6 +389,9 @@ public class Main extends Application {
 		stage.showAndWait();
 		}
 	
+	/**
+	 * Pops open an included HTML page with some quick instructions.
+	 */
 	private static void howToPlay() {
 		stage = new Stage();
 		stage.setTitle("How to Play");
