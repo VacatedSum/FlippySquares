@@ -35,6 +35,8 @@ public class Main extends Application {
 	
 	//We can use this array to add additional difficulties.
 	static private final String[] diffs = {"3", "4", "5", "6", "7"};
+	
+	//static allows for these to be updated from within different or anonymous methods
 	static boolean answer;
 	static Stage stage;
 	static VBox[] cols;
@@ -53,6 +55,8 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		startGame(primaryStage);
 	}
+	
+	
 	//The true start method
 	public void startGame(Stage primaryStage) {
 		
