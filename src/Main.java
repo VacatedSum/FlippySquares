@@ -31,7 +31,7 @@ public class Main extends Application {
 	static private final String offFilePath = new File("").getAbsolutePath() + "\\bin\\img\\off.png";
 	
 	//HowToPlay Path
-	static private final String helpFilePath = new File("").getAbsolutePath() + "\\bin\\help\\HowToPlay.html";
+	static private final String helpFilePath = new File("").getAbsolutePath() + "\\bin\\help\\How To Play.html";
 	
 	//We can use this array to add additional difficulties.
 	static private final String[] diffs = {"3", "4", "5", "6", "7"};
